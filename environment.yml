@@ -1,0 +1,20 @@
+name: mainsite
+channels:
+  - eoas_ubc
+  - conda-forge
+  - defaults
+dependencies:
+  - plotly>=4.10.0
+  - dash>=1.19.0
+  - ipython
+  - gunicorn
+  - git
+  - python=3.8
+  - conda-lock
+  - mamba
+  - scipy
+  - matplotlib
+  - numpy
+  - pandas
+  - pip
+# conda-lock --file environment.yml -p linux-64

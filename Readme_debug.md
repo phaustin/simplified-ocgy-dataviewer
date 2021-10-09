@@ -19,7 +19,20 @@
 Phil's theory of what's going on.  If you look at https://dash.plotly.com/sharing-data-between-callbacks -- you'll see that they share a dataframe between workers just like we do here: https://github.com/phaustin/simplified-ocgy-dataviewer/blob/main/app.py#L24-L26  The difference is
 that they only need to read the data, while our workers need to both read and write,
 
-Solution to try:  enclose that initializer in a function, then call the function here:
+
+Solution to try:  enclose the initializer in a function, then call the function in a callback
+when nclicks is None so that it only runs once and loads dcc.Store
 https://github.com/phaustin/simplified-ocgy-dataviewer/blob/main/app.py#L103  so that each worker
-gets a unique copy.
+gets a unique copy in their browser.
+
+Also -- I can't find an example where a figure is declared at module scope instead of drawn from scratch each time within a callback.   I'm thinking of the "updates on hover" example here:
+
+https://dash.plotly.com/interactive-graphing  whare the update_graph callback makes a new figure and returns it.   Again, I think that's because you can't have global state like this:
+https://github.com/phaustin/simplified-ocgy-dataviewer/blob/main/app.py#L111-L112
+
+Another example is 
+https://github.com/phaustin/dash-sample-apps/blob/main/dash-covid-xray/app.py#L327-L332
+where updating creates a new figure in the callback.
+
+
 
