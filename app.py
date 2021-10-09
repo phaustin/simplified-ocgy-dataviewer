@@ -15,6 +15,8 @@ import json
 import dash
 from dash import dcc
 from dash import html
+#import dash_core_components as dcc
+#import dash_html_components as html
 from dash.dependencies import Input, Output
 
 import plotting as plot
@@ -22,8 +24,14 @@ import station
 
 #initial settings for the plots
 initial_cruise = 'GIPY0405'
-initial_hov_station = station.Station('hover', None, None, None, 'blue')
-initial_click_stations = []
+#initial_hov_station = station.Station('hover', None, None, None, 'blue')
+#initial_click_stations = []
+
+def initial_hov_station():
+    return station.Station('hover', None, None, None, 'blue')
+
+def initial_click_stations():
+    return []
 
 def station_dict(obj):
     return obj.__dict__
@@ -101,8 +109,8 @@ app.layout = html.Div([
     # Using dcc.Store (https://dash.plotly.com/dash-core-components/store) to store values of the hover station and the clicked stations
     # The hov_station is the station currently being hovered over by the mouse. clicked_stations is a list of stations
     # that were clicked and should be plotted. dcc.Store stores a variable as a json, and then it can be accessed through a callback.
-    dcc.Store(id='hov_station', data=json.dumps(initial_hov_station.__dict__), storage_type='memory'),
-    dcc.Store(id='click_stations', data=json.dumps(initial_click_stations, default=station_dict), storage_type='memory')
+    dcc.Store(id='hov_station', data=json.dumps(initial_hov_station().__dict__), storage_type='memory'),
+    dcc.Store(id='click_stations', data=json.dumps(initial_click_stations(), default=station_dict), storage_type='memory')
 ], style={'width': '1000px'})
 
 
@@ -129,7 +137,6 @@ def update_hover_station(hov_data, cruise, hov_station_json):
 
     return json.dumps(hov_station.__dict__) #return a json dict of the station to be stored
 
-
 '''
 # The clear button callback. Uses the dcc.Store 'clear_data' property to clear the stored information.
 @app.callback(
@@ -140,6 +147,7 @@ def update_hover_station(hov_data, cruise, hov_station_json):
 def clear_stations(n_clicks):
     return True, True
 '''
+
 
 # The callback for the 'clicked_stations' list. We input the current stored value for clicked_stations, update it, and return it.
 @app.callback(
