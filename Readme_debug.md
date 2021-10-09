@@ -2,14 +2,14 @@
 
 1. setup:
 
-     mamba create --name dash --file your_lock_file
-     conda activate dash
-     pip install requirements.txt
+       mamba create --name dash --file your_lock_file
+       conda activate dash
+       pip install requirements.txt
 
 2. reproduce the bug:
 
 
-     gunicorn --workers=5 --threads=1 -b 0.0.0.0:8050 app:server
+       gunicorn --workers=5 --threads=1 -b 0.0.0.0:8050 app:server
 
    then visit localhost:8050 in two separate browser windows.  Select a cruise and a couple of
    soundings in one window.  Then select the same cruise in the other window, and rollover a
