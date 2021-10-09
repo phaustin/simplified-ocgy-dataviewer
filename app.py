@@ -76,7 +76,7 @@ app.layout = html.Div([
         ),
 
         # button to clear the selected stations from the map
-        html.Button('Clear', id='clear_button', style={'margin-top': '30px'})
+        #html.Button('Clear', id='clear_button', style={'margin-top': '30px'})
 
     ], style={'width': '40%', 'display': 'inline-block', 'vertical-align': 'middle'}),
 
@@ -130,6 +130,7 @@ def update_hover_station(hov_data, cruise, hov_station_json):
     return json.dumps(hov_station.__dict__) #return a json dict of the station to be stored
 
 
+'''
 # The clear button callback. Uses the dcc.Store 'clear_data' property to clear the stored information.
 @app.callback(
     Output(component_id='click_stations', component_property='clear_data'),
@@ -138,7 +139,7 @@ def update_hover_station(hov_data, cruise, hov_station_json):
 )
 def clear_stations(n_clicks):
     return True, True
-
+'''
 
 # The callback for the 'clicked_stations' list. We input the current stored value for clicked_stations, update it, and return it.
 @app.callback(
