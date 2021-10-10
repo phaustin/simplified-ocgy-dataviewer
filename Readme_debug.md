@@ -33,7 +33,6 @@ the data dictionaries:
 
 https://community.plotly.com/t/help-needed-how-to-check-for-page-first-load-to-change-callback-behaviour/28440/2
 
-
 Also -- I can't find an example where a figure is declared at module scope instead of drawn from scratch each time within a callback.   I'm thinking of the "updates on hover" example here:
 
 https://dash.plotly.com/interactive-graphing  whare the update_graph callback makes a new figure and returns it.   Again, I think that's because you can't have global state like this:
@@ -42,7 +41,3 @@ https://github.com/phaustin/simplified-ocgy-dataviewer/blob/main/app.py#L111-L11
 Another example is 
 https://github.com/phaustin/dash-sample-apps/blob/main/dash-covid-xray/app.py#L327-L332
 where updating creates a new figure in the callback.
-
-
-
-
