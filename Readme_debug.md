@@ -19,10 +19,7 @@
 Phil's theory of what's going on.  If you look at https://dash.plotly.com/sharing-data-between-callbacks -- you'll see that they share a dataframe between workers just like we do here: https://github.com/phaustin/simplified-ocgy-dataviewer/blob/main/app.py#L24-L26  The difference is
 that they only need to read the data, while our workers need to both read and write,
 
-Solution to try:  enclose the initializer in a function, then call the function in a callback
-when nclicks is None so that it only runs once and fills dcc.Store
-https://github.com/phaustin/simplified-ocgy-dataviewer/blob/main/app.py#L103  so that each worker
-gets a unique copy in their browser.
+Solution to try:  enclose the initializer in a function, then initialize in a callback
 
 Notice how covid-xray does this -- they initialize the Store variables to empty dictionaries here:
 https://github.com/phaustin/dash-sample-apps/blob/main/dash-covid-xray/app.py#L291-L292
@@ -45,6 +42,7 @@ https://github.com/phaustin/simplified-ocgy-dataviewer/blob/main/app.py#L111-L11
 Another example is 
 https://github.com/phaustin/dash-sample-apps/blob/main/dash-covid-xray/app.py#L327-L332
 where updating creates a new figure in the callback.
+
 
 
 
