@@ -19,7 +19,7 @@
 Phil's theory of what's going on.  If you look at https://dash.plotly.com/sharing-data-between-callbacks -- you'll see that they share a dataframe between workers just like we do here: https://github.com/phaustin/simplified-ocgy-dataviewer/blob/main/app.py#L24-L26  The difference is
 that they only need to read the data, while our workers need to both read and write,
 
-Solution to try:  enclose the initializer in a function, then initialize in a callback
+Solution to try:  enclose the initializer in a function, then initialize in a callback.
 
 Notice how covid-xray does this -- they initialize the Store variables to empty dictionaries here:
 https://github.com/phaustin/dash-sample-apps/blob/main/dash-covid-xray/app.py#L291-L292
