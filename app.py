@@ -27,12 +27,6 @@ initial_cruise = 'GIPY0405'
 #initial_hov_station = station.Station('hover', None, None, None, 'blue')
 #initial_click_stations = []
 
-def initial_hov_station():
-    return station.Station('hover', None, None, None, 'blue')
-
-def initial_click_stations():
-    return []
-
 def station_dict(obj):
     return obj.__dict__
 
@@ -109,16 +103,16 @@ app.layout = html.Div([
     # Using dcc.Store (https://dash.plotly.com/dash-core-components/store) to store values of the hover station and the clicked stations
     # The hov_station is the station currently being hovered over by the mouse. clicked_stations is a list of stations
     # that were clicked and should be plotted. dcc.Store stores a variable as a json, and then it can be accessed through a callback.
-    dcc.Store(id='hov_station', data=json.dumps(initial_hov_station().__dict__), storage_type='memory'),
-    dcc.Store(id='click_stations', data=json.dumps(initial_click_stations(), default=station_dict), storage_type='memory')
+    #dcc.Store(id='hov_station', data=json.dumps(station.Station('hover', None, None, None, 'blue').__dict__), storage_type='memory'),
+    #dcc.Store(id='click_stations', data=json.dumps([], default=station_dict), storage_type='memory'),
+    dcc.Store(id='hov_station', data={}, storage_type='memory'),
+    dcc.Store(id='click_stations', data={}, storage_type='memory'),
 ], style={'width': '1000px'})
 
 
-
 #initialize the map and the depth profiles. Plotted through the 'plotting' file.
-fig_map = plot.initialize_map(initial_cruise) #fig_map is the figure with the map of the stations
-fig_profiles = plot.initialize_profiles(initial_cruise) #fig_profiles is the figure with depth profile subplots
-
+#fig_map = plot.initialize_map(initial_cruise) #fig_map is the figure with the map of the stations
+#fig_profiles = plot.initialize_profiles(initial_cruise) #fig_profiles is the figure with depth profile subplots
 
 #update the hover station
 @app.callback(
@@ -129,7 +123,7 @@ fig_profiles = plot.initialize_profiles(initial_cruise) #fig_profiles is the fig
 )
 def update_hover_station(hov_data, cruise, hov_station_json):
     #the right statement checks if the cruise was just switched. If the cruise is switched, we clear the hover.
-    if (hov_station_json == None) | (dash.callback_context.triggered[0]['prop_id'].split('.')[0] == 'cruise'):
+    if (hov_station_json == {}) | (hov_station_json == None) | (dash.callback_context.triggered[0]['prop_id'].split('.')[0] == 'cruise'):
         #clear hover
         hov_station = station.Station('hover', None, None, None, 'blue') #empty station
     else:
@@ -158,7 +152,7 @@ def clear_stations(n_clicks):
 )
 def update_click_stations(click_data, click_stations_json, cruise):
     #converting the inputed clicked_stations to a list of Station objects from a json.
-    if click_stations_json == None:
+    if (click_stations_json == None) | (click_stations_json == {}):
         click_stations = []
     else:
         click_stations = station.dict_list_to_station(json.loads(click_stations_json))
@@ -176,11 +170,15 @@ def update_click_stations(click_data, click_stations_json, cruise):
 #Depth profiles
 @app.callback(
     Output(component_id='profiles', component_property='figure'),
+    Input(component_id='profiles', component_property='figure'),
     Input(component_id='hov_station', component_property='data'),
     Input(component_id='click_stations', component_property='data'),
     Input(component_id='cruise', component_property='value'),
 )
-def update_profiles(hov_station_json, click_stations_json, cruise):
+def update_profiles(fig_profiles, hov_station_json, click_stations_json, cruise):
+    if fig_profiles == None:
+        fig_profiles = plot.initialize_profiles(initial_cruise) #fig_profiles is the figure with depth profile subplots
+
     #read in the jsons for hov_station and click_stations
     hov_station = station.dict_to_station(json.loads(hov_station_json))
     click_stations = station.dict_list_to_station(json.loads(click_stations_json))
@@ -198,11 +196,14 @@ def update_profiles(hov_station_json, click_stations_json, cruise):
 # Callback for the map plot
 @app.callback(
     Output(component_id='map', component_property='figure'),
+    Input(component_id='map', component_property='figure'),
     Input(component_id='cruise', component_property='value'),
     Input(component_id='click_stations', component_property='data'),
     Input(component_id='map', component_property='figure')
 )
-def update_map(cruise, click_stations_json, figure_data):
+def update_map(fig_map, cruise, click_stations_json, figure_data):
+    if fig_map == None:
+        fig_map = plot.initialize_map(initial_cruise) #fig_profiles is the figure with depth profile subplots
     #read in the click_stations json
     click_stations = station.dict_list_to_station(json.loads(click_stations_json))
     # switch map is called when we switch cruises, update map is called for other updates.

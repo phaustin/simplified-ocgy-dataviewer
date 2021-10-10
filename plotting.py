@@ -40,11 +40,20 @@ def update_legend(fig, cruise, hov_station, click_stations):
                 fig['data'][i+1]['name'] = str(click_stations[i].name) + '<br>lat: ' + str("{:.2f}".format(click_stations[i].lat)) \
                                          + '<br>lon: ' + str("{:.2f}".format(click_stations[i].lon))
     if cruise == 'GIPY0405':
-        fig.update_layout(legend_title_text='<b>' + 'GIPY04 & GIPY05' + '</b>' + '<br></br>Selected Stations:')
+        fig['layout']['legend']['title']['text']='<b>' + 'GIPY04 & GIPY05' + '</b>' + '<br></br>Selected Stations:'
     else:
-        fig.update_layout(legend_title_text='<b>' + str(cruise) + '</b>' + '<br></br>Selected Stations:')
+        fig['layout']['legend']['title']['text']='<b>' + str(cruise) + '</b>' + '<br></br>Selected Stations:'
     return fig
 
+def clear_hover_traces(fig):
+    fig['data'][0].update(x=[None], y=[None])
+    return fig
+
+def clear_click_traces(fig):
+    for i in range(8):
+        fig['data'][i+1].update(x=[None], y=[None])
+
+    return fig
 
 #initialize the profiles
 def initialize_profiles(cruise):
@@ -64,34 +73,35 @@ def initialize_profiles(cruise):
 
 def switch_profiles(cruise, fig):
     for i in range(9):
-        fig.data[i].update(x=[None], y=[None])
-        fig['data'][i].visible = False
+        fig['data'][i].update(x=[None], y=[None])
+        fig['data'][i]['visible'] = False
     return fig
 
 def update_profiles(hov_station, click_stations, cruise, fig):
 
     if station.is_empty(hov_station) == False:
-        fig.data[0].visible = True
+        fig['data'][0]['visible'] = True
         hov_xvals_temp, hov_yvals_temp = get_x_y_values(cruise, hov_station.lat, hov_station.lon, 'Temperature')
-        fig.data[0].update(x=hov_xvals_temp, y=hov_yvals_temp)
+        fig['data'][0].update(x=hov_xvals_temp, y=hov_yvals_temp)
 
     else:
-        fig.data[0].update(x=[None], y=[None])
-        fig.data[0].visible = False
+        fig['data'][0].update(x=[None], y=[None])
+        fig['data'][0]['visible'] = False
 
     if len(click_stations) != 0:
         for i in range(8):
             if i < len(click_stations):
-                fig.data[i + 1].visible = True
+                fig['data'][i + 1]['visible'] = True
                 click_xvals_temp, click_yvals_temp = get_x_y_values(cruise, click_stations[i].lat, click_stations[i].lon, 'Temperature')
-                fig.data[i+1].update(x=click_xvals_temp, y=click_yvals_temp, marker_color=click_stations[i].colour)
+                fig['data'][i+1].update(x=click_xvals_temp, y=click_yvals_temp, marker_color=click_stations[i].colour)
+                fig['data'][i+1]['marker']['color']=click_stations[i].colour
             else:
-                fig.data[i+1].update(x=[None], y=[None])
-                fig.data[i+1].visible = False
+                fig['data'][i+1].update(x=[None], y=[None])
+                fig['data'][i+1]['visible'] = False
 
     #display cruise info
     fig = update_legend(fig, cruise, hov_station, click_stations)
-    fig.update_xaxes(range=[-5, 30])
+
     return fig
 
 
@@ -119,12 +129,12 @@ def plot_stations(cruise, click_stations):
                                            hovertemplate="<b>" + str(click_stations[i].name) +
                                                          "</b><br><br>Latitude=%{lat} </br> Longitude=%{lon}<extra></extra>",
                                            mode='markers', marker=go.scattermapbox.Marker(size=10, color=click_stations[i].colour)))
+    fig.update_xaxes(range=[-5, 30])
 
     return fig
 
 #figure functions
 def initialize_map(cruise):
-
     fig = plot_stations(cruise, []) #***
 
     if cruise == 'GIPY0405':
@@ -136,13 +146,15 @@ def initialize_map(cruise):
 
 # update map for cruise changes
 def switch_map(cruise, fig):
-    fig.data = []
+    fig['data'] = []
     fig = plot_stations(cruise, [])
 
     if cruise == 'GIPY0405':
-        fig.update_layout(margin={"r": 0, "t": 40, "l": 0, "b": 0}, title='GIPY04 and GIPY05')
+        fig['layout']['margin']={"r": 0, "t": 40, "l": 0, "b": 0}
+        fig['layout']['title']='GIPY04 and GIPY05'
     else:
-        fig.update_layout(margin={"r": 0, "t": 40, "l": 0, "b": 0}, title=cruise)
+        fig['layout']['margin']={"r": 0, "t": 40, "l": 0, "b": 0}
+        fig['layout']['title']=cruise
 
     return fig
 
