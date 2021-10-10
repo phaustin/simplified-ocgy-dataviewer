@@ -28,14 +28,14 @@ and then fill them in a callback here:
 
 https://github.com/phaustin/dash-sample-apps/blob/main/dash-covid-xray/app.py#L405-L412
 
-To figure out whether you needed to initalize or change the values, you could test to see whether the the dictionary keys were already prexent, or whether the  context had any state at all, and if it was empty, or the keys weren't there, then you need  initialize
+To figure out whether you needed to initialize or change the values, you could test to see whether the the dictionary keys were already present, or whether the  context had any state at all, and if it was empty, or the keys weren't there, then you need  initialize
 the data dictionaries:
 
 https://community.plotly.com/t/help-needed-how-to-check-for-page-first-load-to-change-callback-behaviour/28440/2
 
 Also -- I can't find an example where a figure is declared at module scope instead of drawn from scratch each time within a callback.   I'm thinking of the "updates on hover" example here:
 
-https://dash.plotly.com/interactive-graphing  whare the update_graph callback makes a new figure and returns it.   Again, I think that's because you can't have global state like this:
+https://dash.plotly.com/interactive-graphing  where the update_graph callback makes a new figure and returns it.   Again, I think that's because you can't have global state like this:
 https://github.com/phaustin/simplified-ocgy-dataviewer/blob/main/app.py#L111-L112
 
 Another example is 
